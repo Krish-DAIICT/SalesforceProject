@@ -1,0 +1,21 @@
+<!-- Table to display query results -->
+<div *ngIf="query_res.length > 0" class="result-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Index</th>
+        <th *ngFor="let field of selectedFieldsArray">{{ field }}</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let record of query_res;index as i">
+        <td>{{(i+1)}}</td>
+        <td *ngFor="let field of selectedFieldsArray">{{ record[field] }}</td>
+        <td><button (click)="editRecord(record.attributes.url)">Edit</button></td>
+        <td><button (click)="deleteRecord(record.attributes.url)" class="danger">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

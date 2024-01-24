@@ -1,0 +1,49 @@
+<div class="form-container">
+    <form (ngSubmit)="submitForm()" class="custom-form">
+      <div *ngFor="let field of desc">
+        <label for="{{ field.name }}">{{ field.label }}</label>
+        <ng-container *ngIf="field.type === 'picklist'; else textInput">
+          <!-- Dropdown for picklist fields -->
+          <select
+            id="{{ field.name }}"
+            name="{{ field.name }}"
+            [(ngModel)]="record[field.name]"
+            [disabled]="nonUpdatableFieldNames.includes(field.name) ? true : false"
+          >
+            <option *ngFor="let option of field.picklistValues" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </ng-container>
+        <ng-template #textInput>
+          <!-- Text input for other field types -->
+          <ng-container *ngIf="field.type === 'boolean'; else defaultInput">
+            <!-- Dropdown for boolean fields -->
+            <select
+              id="{{ field.name }}"
+              name="{{ field.name }}"
+              [(ngModel)]="record[field.name]"
+              [disabled]="nonUpdatableFieldNames.includes(field.name) ? true : false"
+            >
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </ng-container>
+          <ng-template #defaultInput>
+            <input
+              type="text"
+              id="{{ field.name }}"
+              name="{{ field.name }}"
+              [(ngModel)]="record[field.name]"
+              [disabled]="nonUpdatableFieldNames.includes(field.name) ? true : false"
+            />
+          </ng-template>
+        </ng-template>
+      </div>
+  
+      <div class="button-container">
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+  

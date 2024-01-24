@@ -1,0 +1,130 @@
+// Add these styles to your existing SCSS file
+
+.dropdown {
+  margin-bottom: 15px;
+
+  select {
+    padding: 8px;
+    font-size: 16px;
+  }
+}
+
+.scrollable-fields {
+  max-height: 200px;
+  overflow-y: auto;
+
+  .field-label {
+    display: block;
+    white-space: nowrap;
+    margin-bottom: 8px;
+
+    input {
+      margin-right: 5px;
+    }
+  }
+}
+
+.selected-fields-bar {
+  margin-top: 15px;
+
+  .selected-fields {
+    display: flex;
+    flex-wrap: wrap;
+
+    .selected-field {
+      background-color: #007bff;
+      color: #fff;
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+
+      .remove-field {
+        cursor: pointer;
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+  }
+}
+
+.dropdown {
+  margin-bottom: 15px;
+}
+
+.scrollable-fields {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.field-label {
+  display: block;
+  white-space: nowrap;
+  margin-bottom: 5px;
+}
+
+.selected-fields-bar {
+  margin-top: 10px;
+}
+
+.selected-fields {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.selected-field {
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.remove-field {
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.get-data-button {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.query-result-container {
+  margin-top: 20px;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: auto; 
+  width: 80%; 
+  margin: 0 auto;
+}

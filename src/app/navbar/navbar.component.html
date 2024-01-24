@@ -1,0 +1,11 @@
+<nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-logo">
+        <a routerLink="home">Object Viewer</a>
+      </div>
+      <div class="navbar-links">
+        <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+  
