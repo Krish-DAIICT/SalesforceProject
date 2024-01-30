@@ -15,6 +15,7 @@ export class NavbarComponent {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('baseUrl');
     this.authService.redirectToUrl('')
   }
 }

@@ -1,0 +1,7 @@
+{
+    "/services": {
+      "target": "https://login.salesforce.com",
+      "secure": true,
+      "changeOrigin": true
+    }
+  }

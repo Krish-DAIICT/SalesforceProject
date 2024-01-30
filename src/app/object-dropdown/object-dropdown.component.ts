@@ -23,10 +23,8 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log(this.objlist);
     this.salesforceService.fetchObjects().subscribe((val) => {
       this.objlist = val;
-      console.log('Objects has arrived');
     });
   }
 

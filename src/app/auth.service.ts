@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,24 +11,19 @@ export class AuthService {
   clientId =
     '3MVG9pRzvMkjMb6lG.I67qeRG2r.ssybvBXY71SWOX1Jo4VpryC3qseuQ0aDFK7bfox5LJOLw8dR3Px2PpYFn';
   redirectUri = 'http://localhost:4200/oauth';
-  authEndpoint = 'https://login.salesforce.com/services/oauth2/authorize';
-  tokenEndpoint = 'https://login.salesforce.com/services/oauth2/token';
-  accessToken ?: string|null;
+  // authEndpoint = 'https://login.salesforce.com/services/oauth2/authorize';
+  // tokenEndpoint = 'https://login.salesforce.com/services/oauth2/token';
+  accessToken?: string | null;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   initiateAuthorization() {
-    var authUrl =
-      this.authEndpoint +
-      '?response_type=token' +
-      '&client_id=' +
+    const authUrl = (window.location.href =
+      'https://login.salesforce.com/services/oauth2/authorize?response_type=token&client_id=' +
       this.clientId +
       '&redirect_uri=' +
-      encodeURIComponent(this.redirectUri);
-
-    console.log(authUrl);
-
-    window.location.href = authUrl;
+      this.redirectUri +
+      '&prompt=login');
   }
 
   handleCallback(): Observable<any> {
@@ -42,20 +37,35 @@ export class AuthService {
       if (accessToken) {
         localStorage.setItem('token', accessToken);
         this.accessToken = accessToken;
-        console.log("In handle")
-        this.redirectToUrl('home');
+        console.log('In handle');
+
+        this.getUserInfo().subscribe({
+          next: (res) => {
+            // console.log(res);
+            if(res?.urls?.profile){
+              let profileLink: string = res.urls.profile;
+              // console.log(profileLink)
+              const instanceUrlMatch = profileLink.match(/https:\/\/(.*\.my\.salesforce\.com)\//);
+              if(instanceUrlMatch)localStorage.setItem('baseUrl', instanceUrlMatch[1]);
+              this.redirectToUrl('home');
+            }
+          }
+        })
+
       } else {
         observer.error('Access token not found in the URL fragment.');
       }
     });
   }
 
-  getUserInfo(accessToken: string): Observable<any> {
+  getUserInfo(): Observable<any> {
     const headers = {
-      Authorization: `Bearer ${accessToken}`,
+      'Authorization': `Bearer ${this.accessToken}`,
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'HEAD, GET, POST, PUT, PATCH, DELETE'
     };
     return this.http.get(
-      'https://login.salesforce.com/services/oauth2/userinfo',
+      'http://localhost:4200/services/oauth2/userinfo',
       { headers }
     );
   }
@@ -68,7 +78,7 @@ export class AuthService {
     const token: string | null = localStorage.getItem('token');
 
     if (token) return token;
-    else  this.initiateAuthorization();
+    else this.initiateAuthorization();
     return this.accessToken;
   }
 }
