@@ -1,5 +1,5 @@
 <div class="form-container">
-    <form (ngSubmit)="submitForm()" class="custom-form">
+    <form (ngSubmit)="submitForm()" class="custom-form editForm">
       <div *ngFor="let field of desc">
         <label for="{{ field.name }}">{{ field.label }}</label>
         <ng-container *ngIf="field.type === 'picklist'; else textInput">
