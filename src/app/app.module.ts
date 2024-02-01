@@ -15,6 +15,10 @@ import { Err404Component } from './err404/err404.component';
 import { CheckOuthComponent } from './check-outh/check-outh.component';
 import { OauthComponent } from './oauth/oauth.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { salesforceReducer } from './store/salesforce.reducer';
+import { SalesforceEffects } from './store/salesforce.effects';
 
 @NgModule({
   declarations: [
@@ -33,7 +37,9 @@ import { NavbarComponent } from './navbar/navbar.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgSelectModule
+    NgSelectModule,
+    StoreModule.forRoot({ salesforce: salesforceReducer }),
+    EffectsModule.forRoot([SalesforceEffects]),
   ],
   providers: [
     {

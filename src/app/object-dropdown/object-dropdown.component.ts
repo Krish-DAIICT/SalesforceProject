@@ -1,6 +1,11 @@
 import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { SalesforceService } from '../salesforce.service';
 import { map, pipe } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { fetchObjects, fetchFields, querySalesforce } from '../store/salesforce.actions';
+import { selectObjects, selectFields, selectResults, selectError, selectSelectedObject, selectFieldList } from '../store/salesforce.selectors';
+
 
 @Component({
   selector: 'app-object-dropdown',
@@ -15,23 +20,39 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
   selectedFieldsArray: string[] = [];
   query_res: any = [];
 
+  objects$: Observable<string[]>;
+  fields$: Observable<string[]>;
+  results$: Observable<any[]>;
+  error$: Observable<any>;
+  selectedObject$: Observable<string>;
+  fieldList$: Observable<string[]>;
+
   isQueryResVisible: boolean = false;
   isEditOpen: boolean = false;
 
-  constructor(private salesforceService: SalesforceService) {
+  constructor(private salesforceService: SalesforceService,  private store: Store) {
     this.isEditOpen = false;
+
+    this.objects$ = this.store.select(selectObjects);
+    this.fields$ = this.store.select(selectFields);
+    this.results$ = this.store.select(selectResults);
+    this.error$ = this.store.select(selectError);
+    this.selectedObject$ = this.store.select(selectSelectedObject);
+    this.fieldList$ = this.store.select(selectFieldList);
   }
 
   ngOnInit(): void {
-    this.salesforceService.fetchObjects().subscribe((val) => {
-      this.objlist = val;
-    });
+    // this.salesforceService.fetchObjects().subscribe((val) => {
+    //   this.objlist = val;
+    // });
+    this.store.dispatch(fetchObjects());
   }
 
   updateFieldList() {
     this.resetArrays();
     this.resetQueryRes();
-    this.getFieldList(this.selectedObject);
+    // this.getFieldList(this.selectedObject);
+    this.store.dispatch(fetchFields({ object: this.selectedObject }));
   }
 
   getFieldList(objectName: string): void {
@@ -78,18 +99,19 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
   executeQuery() {
     this.isQueryResVisible = true;
     this.query_res = [];
-    this.salesforceService
-      .querySalesforce(this.selectedObject, this.selectedFieldsArray)
-      .subscribe({
-        next: (val) => {
-          this.query_res = val.records;
-          if (val.records.length === 0) confirm('No record found!!');
-          else this.isEditOpen = false;
-        },
-        error: (error) => {
-          console.error('Error querying Salesforce:', error);
-        },
-      });
+    // this.salesforceService
+    //   .querySalesforce(this.selectedObject, this.selectedFieldsArray)
+    //   .subscribe({
+    //     next: (val) => {
+    //       this.query_res = val.records;
+    //       if (val.records.length === 0) confirm('No record found!!');
+    //       else this.isEditOpen = false;
+    //     },
+    //     error: (error) => {
+    //       console.error('Error querying Salesforce:', error);
+    //     },
+    //   });
+    this.store.dispatch(querySalesforce({ selectedObject: this.selectedObject, selectedFields: this.selectedFieldsArray }));
   }
 
   resetArrays() {
