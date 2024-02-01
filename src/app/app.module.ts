@@ -15,6 +15,7 @@ import { Err404Component } from './err404/err404.component';
 import { CheckOuthComponent } from './check-outh/check-outh.component';
 import { OauthComponent } from './oauth/oauth.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    NgSelectModule
+    NgSelectModule,
+    StoreModule.forRoot({}, {})
   ],
   providers: [
     {
