@@ -11,7 +11,7 @@ import { selectObjects, selectFields, selectResults, selectError, selectSelected
   selector: 'app-object-dropdown',
   templateUrl: './object-dropdown.component.html',
   styleUrls: ['./object-dropdown.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObjectDropdownComponent implements OnInit, OnChanges {
   objlist: string[] = [];
