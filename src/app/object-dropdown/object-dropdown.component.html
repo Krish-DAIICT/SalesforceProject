@@ -68,7 +68,7 @@
   <hr />
 
   <!-- Query Result Component -->
-  <div *ngIf="!isEditOpen && (results$ | async)" class="query-result-container">
+  <div *ngIf="!isEditOpen && isQueryResVisible && (results$ | async)" class="query-result-container">
     <app-query-res
       [query_res]="results$ | async"
       [selectedFieldsArray]="selectedFieldsArray"

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SalesforceService } from '../salesforce.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -6,38 +6,43 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class EditComponent {
   desc: any = [];
   record: any = [];
   @Input() url!: string|null;
 
-  @Input() isEditOpen?:boolean = true;
+  @Input() isEditOpen?: boolean = true;
   @Output() editStatusChange = new EventEmitter<boolean>();
 
   updatableFields: boolean[] = [];
   updatableFieldNames: string[] = [];
   nonUpdatableFieldNames: string[] = [];
 
-  constructor(private salesforceService: SalesforceService, private route: ActivatedRoute, private router: Router) {
-    // this.url = route.snapshot.params['url'];
-    // console.log(this.url);
+  constructor(
+    private salesforceService: SalesforceService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {
     this.url = localStorage.getItem('url');
-    if(!this.url) {
-      alert("URL not found!!!");
+    if (!this.url) {
+      alert('URL not found!!!');
       router.navigate(['']);
-    }else{
+    } else {
       this.fetchRecord(this.url);
     }
   }
 
   fetchRecord(url: string) {
     this.fetchDescription(url);
-    // .. //
     this.salesforceService.fetchRecord(url).subscribe({
       next: ((val) => {
         console.log(val);
         this.record = val;
+        // Manually trigger change detection after updating the record
+        this.cdr.detectChanges();
       }),
       error: (err) => console.error(err),
     });
@@ -53,7 +58,7 @@ export class EditComponent {
           this.desc = val.fields;
 
           if (this.desc) {
-            this.updatableFields = this.desc.map((field: { updateable: boolean; }) => field.updateable === true);
+            this.updatableFields = this.desc.map((field: { updateable: boolean }) => field.updateable === true);
 
             this.updatableFieldNames = this.desc
               .filter((field: any, index: number) => this.updatableFields[index])
@@ -66,6 +71,8 @@ export class EditComponent {
 
           console.log('Updatable Fields:', this.updatableFieldNames);
           console.log('Non-Updatable Fields:', this.nonUpdatableFieldNames);
+          // Manually trigger change detection after updating the description
+          this.cdr.detectChanges();
         },
         error: (err) => console.error(err),
       });
@@ -81,15 +88,12 @@ export class EditComponent {
       }
     }
 
-    // console.log(payload)
-  
-    if(this.url) this.salesforceService.updateRecord(this.url, payload).subscribe({
+    if (this.url) this.salesforceService.updateRecord(this.url, payload).subscribe({
       next: () => {
         console.log('Record updated successfully:');
-        confirm("Updates saved successfully!!");
+        confirm('Updates saved successfully!!');
         this.isEditOpen = false;
         this.editStatusChange.emit(this.isEditOpen);
-        // this.router.navigate(['']);
       },
       error: (err) => {
         console.error('Error updating record:', err);

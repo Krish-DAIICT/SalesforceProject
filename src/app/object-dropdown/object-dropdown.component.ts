@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { SalesforceService } from '../salesforce.service';
 import { map, of, pipe } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -11,6 +11,7 @@ import { selectObjects, selectFields, selectResults, selectError, selectSelected
   selector: 'app-object-dropdown',
   templateUrl: './object-dropdown.component.html',
   styleUrls: ['./object-dropdown.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ObjectDropdownComponent implements OnInit, OnChanges {
   objlist: string[] = [];
@@ -98,6 +99,7 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
 
   executeQuery() {
     this.isQueryResVisible = true;
+    this.isEditOpen = false;
     this.query_res = [];
     this.store.dispatch(querySalesforce({ selectedObject: this.selectedObject, selectedFields: this.selectedFieldsArray }));
     console.log(this.results$)
@@ -111,6 +113,7 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
 
   resetQueryRes() {
     this.isQueryResVisible = false;
+    this.isEditOpen = false;
     this.query_res = [];
     // this.results$ = of();
   }
