@@ -39,7 +39,7 @@ import { SalesforceEffects } from './store/salesforce.effects';
     FormsModule,
     NgSelectModule,
     StoreModule.forRoot({ salesforce: salesforceReducer }),
-    EffectsModule.forRoot([SalesforceEffects]),
+    EffectsModule.forRoot([SalesforceEffects,])
   ],
   providers: [
     {

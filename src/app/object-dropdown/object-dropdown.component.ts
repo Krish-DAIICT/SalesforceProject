@@ -1,6 +1,6 @@
 import { Component, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { SalesforceService } from '../salesforce.service';
-import { map, pipe } from 'rxjs';
+import { map, of, pipe } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { fetchObjects, fetchFields, querySalesforce } from '../store/salesforce.actions';
@@ -45,6 +45,7 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
     // this.salesforceService.fetchObjects().subscribe((val) => {
     //   this.objlist = val;
     // });
+    console.log("In init")
     this.store.dispatch(fetchObjects());
   }
 
@@ -53,12 +54,11 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
     this.resetQueryRes();
     // this.getFieldList(this.selectedObject);
     this.store.dispatch(fetchFields({ object: this.selectedObject }));
+    console.log(this.fieldList$)
   }
 
   getFieldList(objectName: string): void {
-    this.salesforceService.fetchFields(objectName).subscribe((val) => {
-      this.fieldList = val;
-    });
+    this.store.dispatch(fetchFields({ object: this.selectedObject }));
   }
 
   getSelectedFields(): string[] {
@@ -99,19 +99,8 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
   executeQuery() {
     this.isQueryResVisible = true;
     this.query_res = [];
-    // this.salesforceService
-    //   .querySalesforce(this.selectedObject, this.selectedFieldsArray)
-    //   .subscribe({
-    //     next: (val) => {
-    //       this.query_res = val.records;
-    //       if (val.records.length === 0) confirm('No record found!!');
-    //       else this.isEditOpen = false;
-    //     },
-    //     error: (error) => {
-    //       console.error('Error querying Salesforce:', error);
-    //     },
-    //   });
     this.store.dispatch(querySalesforce({ selectedObject: this.selectedObject, selectedFields: this.selectedFieldsArray }));
+    console.log(this.results$)
   }
 
   resetArrays() {
@@ -123,6 +112,7 @@ export class ObjectDropdownComponent implements OnInit, OnChanges {
   resetQueryRes() {
     this.isQueryResVisible = false;
     this.query_res = [];
+    // this.results$ = of();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

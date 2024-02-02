@@ -50,7 +50,7 @@ export class SalesforceService {
   }
 
   querySalesforce(
-    selectedObject: string,
+    selectedObject: string|null,
     selectedFields: string[]
   ): Observable<any> {
     const fieldList = selectedFields.join(',');
@@ -59,7 +59,7 @@ export class SalesforceService {
     return this.http.get(url);
   }
 
-  getObjectMetadata(objectName: string): Observable<any> {
+  getObjectMetadata(objectName: string|null): Observable<any> {
     const url = `https://${this.salesforceBaseUrl}/services/data/v58.0/sobjects/${objectName}/describe`;
     return this.http.get<any>(url);
   }

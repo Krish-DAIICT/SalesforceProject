@@ -1,5 +1,5 @@
 <!-- Table to display query results -->
-<div *ngIf="query_res.length > 0" class="result-table">
+<div *ngIf="query_res && query_res.records" class="result-table">
   <table>
     <thead>
       <tr>
@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let record of query_res;index as i">
+      <tr *ngFor="let record of query_res.records; index as i">
         <td>{{(i+1)}}</td>
         <td *ngFor="let field of selectedFieldsArray">{{ record[field] }}</td>
         <td><button (click)="editRecord(record.attributes.url)">Edit</button></td>

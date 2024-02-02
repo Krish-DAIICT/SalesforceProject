@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
 } from '@angular/core';
 import { SalesforceService } from '../salesforce.service';
@@ -14,26 +15,27 @@ import { Router } from '@angular/router';
   templateUrl: './query-res.component.html',
   styleUrl: './query-res.component.scss',
 })
-export class QueryResComponent implements AfterViewInit {
+export class QueryResComponent {
   @Input() query_res: any;
   @Input() selectedFieldsArray!: string[];
-  @Input() selectedObject!: string;
+  @Input() selectedObject!: string|null;
   fields: string[] = [];
   @Input() isEditOpen?: boolean = false;
   @Output() editStatusChange = new EventEmitter<boolean>();
+
+  result: any = [];
 
   constructor(
     private salesforceService: SalesforceService,
     private router: Router
   ) {}
 
-  ngAfterViewInit(): void {
-    // console.log("Hiiiiiiii")
+  ngOnChanges(): void {
   }
 
   isRelationshipField(fieldName: string): any {
     const objectMetadata = this.salesforceService.getObjectMetadata(
-      this.selectedObject
+      (this.selectedObject) 
     ); // Implement this method
 
     objectMetadata.pipe(map((response: any) => response.fields)).subscribe(
@@ -77,7 +79,7 @@ export class QueryResComponent implements AfterViewInit {
       .querySalesforce(this.selectedObject, this.selectedFieldsArray)
       .subscribe({
         next: (val) => {
-          this.query_res = val.records;
+          this.result = val.records;
         },
         error: (err) => {
           console.error(err);
